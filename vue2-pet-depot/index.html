@@ -14,9 +14,10 @@
   <div id="app">
     <header>
       <h1 v-text="sitename"></h1>
+      <button @click="showCheckout">Товаров в корзине: {{ cartItemCount }}</button>
     </header>
     <main>
-      <div>
+      <div v-if="showProduct">
         <figure>
           <img :src="product.image" :alt="sitename">
         </figure>
@@ -24,7 +25,12 @@
           <h2>{{ product.title }}</h2>
           <p v-html="product.description"></p>
           <p>{{ product.price | formatPrice }}</p>
+          <button v-if="canAddToCart" @click="addToCart">Add to cart</button>
+          <button v-else disabled>Add to cart</button>
         </div>
+      </div>
+      <div v-else>
+        <h2>Страница оформления заказа</h2>
       </div>
     </main>
   </div>
@@ -40,6 +46,25 @@
           description: 'A 25 pound bag of <em>irresistible</em> organic goodness for your cat.',
           price: 2000,
           image: 'assets/images/product-fullsize.png'
+        },
+        cart: [],
+        avialableInventory: 5,
+        showProduct: true
+      },
+      computed: {
+        cartItemCount() {
+          return this.cart.length;
+        },
+        canAddToCart() {
+          return this.avialableInventory > this.cartItemCount;
+        }
+      },
+      methods: {
+        addToCart() {
+          this.cart.push(this.product.id);
+        },
+        showCheckout() {
+          this.showProduct = !this.showProduct;
         }
       },
       filters: {
