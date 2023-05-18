@@ -25,12 +25,34 @@
           <h2>{{ product.title }}</h2>
           <p v-html="product.description"></p>
           <p>{{ product.price | formatPrice }}</p>
-          <button v-if="canAddToCart" @click="addToCart">Add to cart</button>
-          <button v-else disabled>Add to cart</button>
+          <button v-if="canAddToCart" @click="addToCart">Купить</button>
+          <button v-else disabled>Купить</button>
         </div>
       </div>
       <div v-else>
         <h2>Страница оформления заказа</h2>
+        <div>
+          <label>Имя: <input v-model="order.firstName" type="text"></label>
+          <label>Фамилия: <input v-model="order.lastName" type="text"></label>
+          <label>Город: <select v-model="order.city">
+              <option disabled selected value="">выберите город...</option>
+              <option>Архангельск</option>
+              <option>Северодвинск</option>
+              <option>Коряжма</option>
+            </select>
+          </label>
+          <label>Адрес: <input v-model="order.address" type="text"></label>
+          <label>Телефон: <input v-model="order.phone" type="text"></label>
+          <span>Пол: </span>
+          <label>мужской <input v-modal="order.sex" type="radio" id="man" value="man"></label>
+          <label>женский <input v-modal="order.sex" type="radio" id="woman" value="woman"></label>
+          <labelОтправить как подарок: ><input v-modal="order.gift" type="checkbox" id="gift" value="true"></label>
+        </div>
+        <div>
+          <ul>
+            <li v-for="(value, key) in order">{{key}}: {{value}}</li>
+          </ul>
+        </div>
       </div>
     </main>
   </div>
@@ -44,8 +66,17 @@
           id: 1001,
           title: 'Cat Food, 25lb bag',
           description: 'A 25 pound bag of <em>irresistible</em> organic goodness for your cat.',
-          price: 2000,
+          price: 20000,
           image: 'assets/images/product-fullsize.png'
+        },
+        order: {
+          firstName: '',
+          lastName: '',
+          city: '',
+          address: '',
+          phone: '',
+          sex: 'мужской',
+          gift: false
         },
         cart: [],
         avialableInventory: 5,
@@ -78,9 +109,9 @@
               priceArray.splice(index + 3, 0, ',');
               index += 4;
             }
-            return '$' + priceArray.reverse().join('');
+            return priceArray.reverse().join('') + ' ₽';
           }
-          return '$' + (price / 100).toFixed(2);
+          return (price / 100).toFixed(2) + ' ₽';
         }
       }
     });
