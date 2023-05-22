@@ -19,48 +19,54 @@
     </header>
     <main>
       <div v-if="showProduct">
-        <figure>
-          <img :src="product.image" :alt="sitename">
-        </figure>
-        <div>
-          <h2>{{ product.title }}</h2>
-          <p v-html="product.description"></p>
-          <p>{{ product.price | formatPrice }}</p>
-          <button v-if="canAddToCart" @click="addToCart">Добавить в корзину</button>
-          <button v-else disabled>Добавить в корзину</button>
-          <span v-if="(product.avialableInventory - cartItemCount) === 0">Товар закончился</span>
-          <span v-else-if="(product.avialableInventory - cartItemCount) < 5">Осталось всего {{ product.avialableInventory - cartItemCount }} шт.</span>
-          <span v-else>Купи сейчас!</span>
+        <div class="product" v-for="product in products">
+          <hr>
+          <figure>
+            <img :src="product.image" :alt="sitename">
+          </figure>
           <div>
-            <span class="rating" :class="{'rating--active' : checkRating(n)}" v-for="n in 5"></span>
+            <h2>{{ product.title }}</h2>
+            <p v-html="product.description"></p>
+            <p>{{ product.price | formatPrice }}</p>
+            <button v-if="canAddToCart(product)" @click="addToCart(product)">Добавить в корзину</button>
+            <button v-else disabled>Добавить в корзину</button>
+            <span v-if="(product.avialableInventory - cartItemCount) === 0">Товар закончился</span>
+            <span v-else-if="(product.avialableInventory - cartItemCount) < 5">Осталось всего {{ product.avialableInventory - cartItemCount }} шт.</span>
+            <span v-else>Купи сейчас!</span>
+            <div>
+              <span class="rating" :class="{'rating--active' : checkRating(n, product)}" v-for="n in 5"></span>
+            </div>
+
           </div>
         </div>
       </div>
       <div v-else>
-        <h2>Страница оформления заказа</h2>
-        <div>
-          <label>Имя: <input v-model.trim.lazy="order.firstName" type="text"></label>
-          <label>Фамилия: <input v-model.trim="order.lastName" type="text"></label>
-          <label>Город: <select v-model="order.city">
-              <option disabled selected value="">выберите город...</option>
-              <option v-for="city in cities" :value="city">{{ city }}</option>
-            </select>
-          </label>
-          <label>Адрес: <input v-model="order.address" type="text"></label>
-          <label>Телефон: <input v-model.number="order.phone" type="text"></label>
-          <span>Пол: </span>
-          <label>мужской <input v-model="order.sex" type="radio" id="man" :value="order.male"></label>
-          <label>женский <input v-model="order.sex" type="radio" id="woman" :value="order.female"></label>
-          <label>Отправить как подарок:
-            <input v-model="order.gift" type="checkbox" id="gift" value="true"
-              :true-value="order.sendGift" :false-value="order.dontSendGift">
-          </label>
-        </div>
-        <button @click="submitForm">Заказать</button>
-        <div>
-          <ul>
-            <li v-for="(value, key) in order">{{key}}: {{value}}</li>
-          </ul>
+        <div class="order">
+          <h2>Страница оформления заказа</h2>
+          <div>
+            <label>Имя: <input v-model.trim.lazy="order.firstName" type="text"></label>
+            <label>Фамилия: <input v-model.trim="order.lastName" type="text"></label>
+            <label>Город: <select v-model="order.city">
+                <option disabled selected value="">выберите город...</option>
+                <option v-for="city in cities" :value="city">{{ city }}</option>
+              </select>
+            </label>
+            <label>Адрес: <input v-model="order.address" type="text"></label>
+            <label>Телефон: <input v-model.number="order.phone" type="text"></label>
+            <span>Пол: </span>
+            <label>мужской <input v-model="order.sex" type="radio" id="man" :value="order.male"></label>
+            <label>женский <input v-model="order.sex" type="radio" id="woman" :value="order.female"></label>
+            <label>Отправить как подарок:
+              <input v-model="order.gift" type="checkbox" id="gift" value="true"
+                :true-value="order.sendGift" :false-value="order.dontSendGift">
+            </label>
+          </div>
+          <button @click="submitForm">Заказать</button>
+          <div>
+            <ul>
+              <li v-for="(value, key) in order">{{key}}: {{value}}</li>
+            </ul>
+          </div>
         </div>
       </div>
     </main>
@@ -71,15 +77,6 @@
       el: '#app',
       data: {
         sitename: 'Vue.js Pet Depot',
-        product: {
-          id: 1001,
-          title: 'Cat Food, 25lb bag',
-          description: 'A 25 pound bag of <em>irresistible</em> organic goodness for your cat.',
-          price: 20000,
-          image: 'assets/images/product-fullsize.png',
-          avialableInventory: 10,
-          rating: 3
-        },
         cities: ['Архангельск', 'Северодвинск', 'Коряжма'],
         order: {
           firstName: '',
@@ -94,20 +91,18 @@
           sendGift: 'Send As A Gift',
           dontSendGift: 'Do Not Send As A Gift'
         },
+        products: [],
         cart: [],
         showProduct: true
       },
       computed: {
         cartItemCount() {
           return this.cart.length;
-        },
-        canAddToCart() {
-          return this.product.avialableInventory > this.cartItemCount;
         }
       },
       methods: {
-        addToCart() {
-          this.cart.push(this.product.id);
+        addToCart(aProduct) {
+          this.cart.push(aProduct.id);
         },
         showCheckout() {
           this.showProduct = !this.showProduct;
@@ -115,8 +110,28 @@
         submitForm() {
           alert('Submitted');
         },
-        checkRating(n) {
-          return this.product.rating - n >= 0;
+        canAddToCart(aProduct) {
+          return aProduct.availableInventory > this.cartCount(aProduct.id);
+        },
+        cartCount(id) {
+          let count = 0;
+          for (let i = 0; i < this.cart.length; i++) {
+            if (this.cart[i] === id) {
+              count++;
+            }
+          }
+          return count;
+          console.log(count);
+          // const count = this.cart.reduce((counter, item) => {
+          //   if (item === id) {
+          //     counter++;
+          //   }
+          //   return counter;
+          // }, 0);
+          // return count;
+        },
+        checkRating(n, myProduct) {
+          return myProduct.rating - n >= 0;
         }
       },
       filters: {
@@ -134,6 +149,13 @@
           }
           return (price / 100).toFixed(2) + ' ₽';
         }
+      },
+      created() {
+        axios.get('./assets/products.json')
+          .then((response) => {
+            this.products = response.data.products;
+            console.log(this.products);
+          })
       }
     });
   </script>
