@@ -7,6 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.jsdelivr.net/npm/vue@2.7.8/dist/vue.js"></script>
   <link rel="stylesheet" type="text/css" href="assets/css/app.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.js" integrity="sha512-RjvSEaeDqPCfUVQ9kna2/2OqHz/7F04IOl1/66LmQjB/lOeAzwq7LrbTzDbz5cJzlPNJ5qteNtHR56XaJSTNWw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <title>Vue.js Pet Depot</title>
 </head>
 
@@ -25,8 +26,14 @@
           <h2>{{ product.title }}</h2>
           <p v-html="product.description"></p>
           <p>{{ product.price | formatPrice }}</p>
-          <button v-if="canAddToCart" @click="addToCart">Купить</button>
-          <button v-else disabled>Купить</button>
+          <button v-if="canAddToCart" @click="addToCart">Добавить в корзину</button>
+          <button v-else disabled>Добавить в корзину</button>
+          <span v-if="(product.avialableInventory - cartItemCount) === 0">Товар закончился</span>
+          <span v-else-if="(product.avialableInventory - cartItemCount) < 5">Осталось всего {{ product.avialableInventory - cartItemCount }} шт.</span>
+          <span v-else>Купи сейчас!</span>
+          <div>
+            <span class="rating" :class="{'rating--active' : checkRating(n)}" v-for="n in 5"></span>
+          </div>
         </div>
       </div>
       <div v-else>
@@ -69,7 +76,9 @@
           title: 'Cat Food, 25lb bag',
           description: 'A 25 pound bag of <em>irresistible</em> organic goodness for your cat.',
           price: 20000,
-          image: 'assets/images/product-fullsize.png'
+          image: 'assets/images/product-fullsize.png',
+          avialableInventory: 10,
+          rating: 3
         },
         cities: ['Архангельск', 'Северодвинск', 'Коряжма'],
         order: {
@@ -86,7 +95,6 @@
           dontSendGift: 'Do Not Send As A Gift'
         },
         cart: [],
-        avialableInventory: 5,
         showProduct: true
       },
       computed: {
@@ -94,7 +102,7 @@
           return this.cart.length;
         },
         canAddToCart() {
-          return this.avialableInventory > this.cartItemCount;
+          return this.product.avialableInventory > this.cartItemCount;
         }
       },
       methods: {
@@ -106,6 +114,9 @@
         },
         submitForm() {
           alert('Submitted');
+        },
+        checkRating(n) {
+          return this.product.rating - n >= 0;
         }
       },
       filters: {
