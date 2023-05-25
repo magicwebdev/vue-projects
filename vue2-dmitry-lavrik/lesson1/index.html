@@ -10,9 +10,13 @@
 <body>
   <div class="wrapper">
     <div class="sample">
-      <input type="text">
+      <!--
+      При работе с Vue контекстом всегда является экземпляр Vue, а не элемент DOM на котором произошло событие.
+      Поэтому чтобы обратится к элементу DOM вместо this как в нативном js надо использовать $event.target
+      -->
+      <input type="text" :value="name" @input="name = $event.target.value" @change="onChange">
       <hr>
-      <h2>Hello, {{ $data.name }}!</h2>
+      <h2>Hello, {{ name }}!</h2>
     </div>
   </div>
 
@@ -21,6 +25,11 @@
       el: '.sample',
       data: {
         name: 'Aleksa'
+      },
+      methods: {
+        onChange(e) {
+          console.log(e);
+        }
       }
     });
   </script>
