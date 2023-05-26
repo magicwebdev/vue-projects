@@ -15,23 +15,37 @@
       Поэтому чтобы обратится к элементу DOM вместо this как в нативном js надо использовать $event.target
       -->
       <input type="text" :value="name" @input="name = $event.target.value" @change="onChange">
-      <hr>
-      <h2>Hello, {{ name }}!</h2>
+      <button @click="showGreeting = !showGreeting">Toggle greeting</button>
+      <button @click="toggleGreeting">Toggle greeting 2</button>
+      <h2 v-show="showGreeting">Hello, {{ name }}!</h2>
+      <h2 v-if="showGreeting">Hello, {{ name }}!</h2>
+      <!-- Тег template используется для объединения элементов в шаблоне, но в итоговый рендер не попадает -->
+      <template v-else>
+        <p>Greeting is hidden</p>
+        <p>Sorry =)</p>
+      </template>
     </div>
   </div>
 
   <script>
-    new Vue({
+    let sample = new Vue({
       el: '.sample',
       data: {
-        name: 'Aleksa'
+        name: 'Aleksa',
+        showGreeting: true
       },
       methods: {
         onChange(e) {
           console.log(e);
+        },
+        toggleGreeting() {
+          this.showGreeting = !this.showGreeting;
         }
       }
     });
+
+    // Вывод экземпляра Vue в консоль для просмотра содержимого
+    console.log(sample);
   </script>
 </body>
 </html>

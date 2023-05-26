@@ -9,17 +9,18 @@
 </head>
 <body>
   <div id="app">
-    <my-component :my-info="message" inline-template>
-      <div>
-        <p>
-          inline-template - {{myInfo}}
-        </p>
-      </div>
-    </my-component>
+    <p>{{ counter }}</p>
+    <button @click="incrementCounter">Increment counter</button>
+    <my-component @increment-me="incrementCounter"></my-component>
   </div>
   <script>
     const MyComponent =  {
-      props: ['myInfo']
+      template: `<button @click="childIncrementCounter">Increment counter from child</button>`,
+      methods: {
+        childIncrementCounter() {
+          this.$emit('increment-me');
+        }
+      }
     }
 
     new Vue({
@@ -27,7 +28,12 @@
       components: {'my-component': MyComponent},
       data() {
         return {
-          message: 'Hello World!'
+          counter: 0
+        }
+      },
+      methods: {
+        incrementCounter() {
+          this.counter++;
         }
       }
     });
