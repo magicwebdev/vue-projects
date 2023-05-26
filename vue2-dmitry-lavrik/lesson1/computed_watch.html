@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.7.8/dist/vue.js"></script>
+  <title>Урок 1</title>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="sample">
+      <p>Enter promocode:</p>
+      <input type="text" v-model:value="promo">
+      <h2>Sale using computed {{ getSale }}%</h2>
+      <h2>Sale using computed {{ sale }}%</h2>
+    </div>
+  </div>
+
+  <script>
+    function getSaleUsingComputed(code) {
+      let codes = {
+        newYear: 10,
+        birthday: 20
+      }
+      let sale = codes[code] ? codes[code] : 0;
+      return sale;
+    }
+
+    function getSaleUsingWatch(code, cb) {
+      let codes = {
+        newYear: 10,
+        birthday: 20
+      }
+      let sale = codes[code] ? codes[code] : 0;
+      setTimeout(() => {
+        cb(sale);
+        console.log(sale);
+      }, 2000);
+    }
+
+    new Vue({
+      el: '.sample',
+      data: {
+        promo: '',
+        sale: 0
+      },
+      // computed используется для синхронных операций,
+      // так устанавливает свойства сразу и не может быть отложенным
+      computed: {
+        getSale() {
+          return getSaleUsingComputed(this.promo);
+        }
+      },
+      // watch используется, если есть асинхронные операции
+      watch: {
+        promo() {
+          getSaleUsingWatch(this.promo, (sale) => this.sale = sale)
+        }
+      }
+    });
+  </script>
+</body>
+</html>

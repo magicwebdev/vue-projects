@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.7.8/dist/vue.js"></script>
+  <style>
+    ul {
+      padding: 0;
+      list-style: none;
+    }
+    table {
+      border-collapse: collapse;
+    }
+    td {
+      padding: 10px;
+      border: 1px solid grey;
+    }
+  </style>
+  <title>Урок 1</title>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="sample">
+      <button @click="addNumber">Add number</button>
+      <button @click="sortNumbers">Sort numbers</button>
+      <ul>
+        <li v-for="(number, index) in numbers"
+        @mouseenter="$event.target.style.color='red'"
+        @mouseleave="$event.target.style.color='black'">
+          {{ index }}) {{ number }}
+        </li>
+      </ul>
+
+      <!-- При наведении курсора мышки подсвечиваются нечетные строки -->
+      <table>
+        <tr v-for="(value, key, index) in info" :key="key"
+        @mouseenter="onMouseEnter($event, index)"
+        @mouseleave="onMouseLeave($event, index)">
+          <td>{{ index }}</td>
+          <td>{{ key }}</td>
+          <td>{{ value }}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    new Vue({
+      el: '.sample',
+      data: {
+        numbers: [],
+        info: {
+          firstName: 'Aleksandra',
+          lastName: 'Khrapkova',
+          email: 'axi83@mail.ru',
+          phone: '89600077777'
+        }
+      },
+      methods: {
+        addNumber() {
+          this.numbers.push(Math.ceil(Math.random() * 10));
+        },
+        sortNumbers() {
+          this.numbers.sort((a, b) => a > b ? 1 : -1);
+        },
+        onMouseEnter(e, index) {
+          if (index & 1) {
+            e.target.style.backgroundColor = 'lightgrey';
+          }
+        },
+        onMouseLeave(e, index) {
+          if (index & 1) {
+            e.target.style.backgroundColor = 'white';
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
