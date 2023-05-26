@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.7.8/dist/vue.js"></script>
+  <style>
+    label {
+      display: block;
+      margin: 10px 0;
+    }
+    table {
+      border-collapse: collapse;
+    }
+    td {
+      padding: 10px;
+      border: 1px solid grey;
+    }
+  </style>
+  <title>Урок 1</title>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="sample">
+      <form v-if="showForm" @submit.prevent="showTable">
+        <label>First name: <input v-model="person.firstName" type="text"></label>
+        <label>Last name: <input v-model="person.lastName" type="text"></label>
+        <label>Phone: <input v-model="person.phone" type="tel"></label>
+        <label>Email: <input v-model="person.email" type="email"></label>
+        <span>Guests </span><button @click="addGuest" type="button">Add guest</button>
+        <label @dblclick="removeGuest(index)" v-for="(guest, index) in person.guests">Guest:
+          <input v-model="person.guests[index]" type="text">
+        </label>
+        <button type="submit">Send</button>
+      </form>
+      <table v-else>
+        <tr>
+          <td>Name</td>
+          <td>{{ person.firstName }} {{ person.lastName }}</td>
+        </tr>
+        <tr>
+          <td>Email</td>
+          <td>{{ person.email }}</td>
+        </tr>
+        <tr>
+          <td>Phone</td>
+          <td>{{ person.phone }}</td>
+        </tr>
+        <tr>
+          <td>Guests</td>
+          <td>
+            <table>
+              <tr v-for="guest in person.guests">
+                <td>{{ guest }}</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    new Vue({
+      el: '.sample',
+      data: {
+        person: {
+          firstName: '',
+          lastName: '',
+          phone: '',
+          email: '',
+          guests: []
+        },
+        showForm: true
+      },
+      methods: {
+        addGuest() {
+          this.person.guests.push('');
+        },
+        removeGuest(index) {
+          this.person.guests.splice(index, 1);
+        },
+        showTable() {
+          this.showForm = !this.showForm;
+        }
+      }
+    });
+  </script>
+</body>
+</html>
