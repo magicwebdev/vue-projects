@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.7.8/dist/vue.js"></script>
+  <style>
+    .alert {
+      width: 200px;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid grey;
+    }
+    .alert--info {
+      background-color: lightblue;
+    }
+    .alert--warning {
+      background-color: lightcoral;
+    }
+    .my--info {
+      font-style: italic;
+    }
+    .my--warning {
+      font-weight: bold;
+    }
+    .table-border td {
+      padding: 10px;
+      border: 1px solid grey;
+    }
+    .table-collapse {
+      border-collapse: collapse;
+    }
+    .table-dark {
+      background-color: black;
+      color: white;
+    }
+  </style>
+  <title>Урок 2</title>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="sample">
+      <p class="alert" :class="className">Some text</p>
+      <label><input type="radio" value="info" v-model="status"> Info</label>
+      <label><input type="radio" value="warning" v-model="status"> Warning</label>
+      <p>{{ status }}</p>
+      <hr>
+
+      <label v-for="(value, key) in flags"><input type="checkbox" v-model="flags[key]"> {{ key }}</label>
+      <table :class="flags">
+        <tr>
+          <td>Title</td>
+          <td>Some</td>
+          <td>Text</td>
+        </tr>
+        <tr>
+          <td>Title</td>
+          <td>Some</td>
+          <td>Text</td>
+        </tr>
+        <tr>
+          <td>Title</td>
+          <td>Some</td>
+          <td>Text</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    new Vue({
+      el: '.sample',
+      data: {
+        status: 'info',
+        flags: {
+          'table-border': true,
+          'table-collapse': false,
+          'table-dark': false
+        }
+      },
+      computed: {
+        /* :class может принимать следующие значения:
+        :class = "string"
+        :class = "array"
+        :class = "obj"
+        :class = "[str, obj]"
+        :class = "['alert', 'some', {a: true, b: false}]"
+        */
+        className() {
+          return [`alert--${this.status}`, `my--${this.status}`];
+        }
+      }
+    });
+  </script>
+</body>
+</html>

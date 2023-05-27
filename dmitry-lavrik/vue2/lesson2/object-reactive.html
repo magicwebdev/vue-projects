@@ -5,12 +5,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.jsdelivr.net/npm/vue@2.7.8/dist/vue.js"></script>
-  <title>Урок 1</title>
+  <title>Урок 2</title>
 </head>
 <body>
   <div class="wrapper">
     <div class="sample">
-      <!-- Объекты не реактивны на добавление новых свойств -->
       <button @click="addItem">Add item</button>
       <ul>
         <!-- key првязан к уникальному значению itemIterator
@@ -28,13 +27,15 @@
         itemIterator: 0,
       },
       methods: {
+        // У объектов новые свойства не реактивные и добавлять их надо с помощью $set (у массивов реактивные)
         addItem() {
           this.itemIterator++;
           this.$set(this.items, this.itemIterator, `item ${this.itemIterator}`);
           console.log(this.items);
         },
-        deleteItem(index) {
-          this.$delete(this.items, index);
+        // Удаляет элемент списка при клике на него
+        deleteItem(key) {
+          this.$delete(this.items, key);
           console.log(this.items);
         }
       }
