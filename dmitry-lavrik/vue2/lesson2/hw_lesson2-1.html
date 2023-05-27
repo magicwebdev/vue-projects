@@ -17,17 +17,23 @@
       max-width: 500px;
       margin: 0 auto;
     }
+
     .error {
-      border: 1px solid lightcoral;
+      color: darkred;
     }
+
     .success {
-      border: 1px solid lightgreen;
+      color: darkgreen;
     }
   </style>
   <title>Урок 2</title>
 </head>
 
 <body>
+  <!--
+    <i class="fa fa-check-circle"></i>
+    <i class="fa fa-question-circle"></i>
+  -->
   <div class="wrapper">
     <div class="sample">
       <form>
@@ -35,9 +41,9 @@
           <div class="progress-bar"></div>
         </div>
         <div>
-          <div class="form-group" v-for="(value, key) in info">
-            <label>{{ value.name }}</label>
-            <input type="text" class="form-control" v-model="value.value">
+          <div class="form-group" v-for="field in info">
+            <label>{{ field.name }} <i :class="iconClasses"></i></label>
+            <input type="text" class="form-control" v-model="field.value" @input="checkedField(field)">
           </div>
         </div>
         <button class="btn btn-primary">
@@ -46,9 +52,9 @@
       </form>
       <div>
         <table class="table table-bordered">
-          <tr v-for="(value, key) in info">
-            <td>{{ value.name }}</td>
-            <td>{{ value.value }}</td>
+          <tr v-for="field in info">
+            <td>{{ field.name }}</td>
+            <td>{{ field.value }}</td>
           </tr>
         </table>
       </div>
@@ -85,7 +91,15 @@
             value: '',
             pattern: /.+/
           }
-        ]
+        ],
+        iconClasses: ''
+      },
+      methods: {
+        checkedField(field) {
+          this.iconClasses = (field.pattern).test(field.value) ?
+            ['fa', 'fa-check-circle', 'success'] :
+            ['fa', 'fa-question-circle', 'error'];
+        }
       }
     });
   </script>
