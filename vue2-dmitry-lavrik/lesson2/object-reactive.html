@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.7.8/dist/vue.js"></script>
+  <title>Урок 1</title>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="sample">
+      <!-- Объекты не реактивны на добавление новых свойств -->
+      <button @click="addItem">Add item</button>
+      <ul>
+        <!-- key првязан к уникальному значению itemIterator
+          и при удалении одного элемента рендеринг других элементов не происходит -->
+        <li v-for="(item, key, index) in items" :key="key" @click="deleteItem(key)">{{ item }}</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    new Vue({
+      el: '.sample',
+      data: {
+        items: {},
+        itemIterator: 0,
+      },
+      methods: {
+        addItem() {
+          this.itemIterator++;
+          this.$set(this.items, this.itemIterator, `item ${this.itemIterator}`);
+          console.log(this.items);
+        },
+        deleteItem(index) {
+          this.$delete(this.items, index);
+          console.log(this.items);
+        }
+      }
+    });
+  </script>
+</body>
+</html>

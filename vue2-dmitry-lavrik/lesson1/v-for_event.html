@@ -25,6 +25,8 @@
     <div class="sample">
       <button @click="addNumber">Add number</button>
       <button @click="sortNumbers">Sort numbers</button>
+      <!-- Не надо размещать два и более v-for с автоматическими :key в одном родителе, это может привести к ошибкам.
+        Если нет отдельного родительского тега, можно тег с директивой v-for обернуть в <template></template>.  -->
       <ul>
         <li v-for="(number, index) in numbers"
         @mouseenter="$event.target.style.color='red'"

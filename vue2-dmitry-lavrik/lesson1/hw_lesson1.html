@@ -29,7 +29,7 @@
         <label>Phone: <input v-model="person.phone" type="tel"></label>
         <label>Email: <input v-model="person.email" type="email"></label>
         <span>Guests </span><button @click="addGuest" type="button">Add guest</button>
-        <label @dblclick="removeGuest(index)" v-for="(guest, index) in person.guests">Guest:
+        <label @dblclick="removeGuest(index)" v-for="(guest, index) in person.guests">Guest {{ index + 1 }}:
           <input v-model="person.guests[index]" type="text">
         </label>
         <button type="submit">Send</button>
@@ -37,7 +37,7 @@
       <table v-else>
         <tr>
           <td>Name</td>
-          <td>{{ person.firstName }} {{ person.lastName }}</td>
+          <td>{{ fullName }}</td>
         </tr>
         <tr>
           <td>Email</td>
@@ -73,6 +73,11 @@
           guests: []
         },
         showForm: true
+      },
+      computed: {
+        fullName() {
+          return `${this.person.firstName} ${this.person.lastName}`;
+        }
       },
       methods: {
         addGuest() {
